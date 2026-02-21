@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D.H.E.S billing software</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Vibrant Color Palette */
+            --primary: #FF6B00; /* Strong Orange */
+            --primary-hover: #E65C00;
+            --secondary: #3B82F6; /* Electric Blue */
+            --success: #10B981;
+            --success-hover: #059669;
+            --danger: #EF4444;
+            --danger-hover: #DC2626;
+            
+            --card-bg: #FFFFFF;
+            --text-main: #1F2937;
+            --text-muted: #6B7280;
+            --border: #E5E7EB;
+            --input-bg: #F9FAFB;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        
+        /* Awesome Gradient Background */
+        body { 
+            background: linear-gradient(135deg, #0F2027, #203A43, #2C5364);
+            color: var(--text-main); 
+            padding: 40px 20px; 
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px; margin: auto; background: var(--card-bg);
+            padding: 40px; border-radius: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Typography */
+        h1 { font-size: 32px; font-weight: 800; color: var(--secondary); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; text-align: center;}
+        h2 { font-size: 20px; font-weight: 600; margin-bottom: 15px; color: var(--text-main); }
+        h3 { font-size: 15px; font-weight: 700; color: var(--primary); text-transform: uppercase; margin-bottom: 10px; letter-spacing: 1px;}
+
+        /* Login Screen */
+        #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 50vh; text-align: center; }
+        #login-screen h1 { color: #fff; }
+        #login-screen p { color: #cbd5e1; }
+        #login-screen input { width: 300px; padding: 14px; text-align: center; font-size: 16px; margin-bottom: 20px; border-radius: 8px; border: 2px solid var(--primary); outline: none; box-shadow: 0 0 15px rgba(255, 107, 0, 0.3);}
+        
+        #main-app { display: none; }
+
+        /* Grid Layouts */
+        .header-info { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 30px; }
+        .info-card { background: var(--input-bg); padding: 20px; border-radius: 12px; border: 1px solid var(--border); border-left: 4px solid var(--secondary); box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
+
+        /* Inputs */
+        input, textarea {
+            width: 100%; padding: 12px 14px; margin-top: 6px; margin-bottom: 12px;
+            border: 1px solid var(--border); border-radius: 8px; background: var(--card-bg);
+            font-size: 14px; color: var(--text-main); transition: all 0.3s;
+        }
+        input:focus, textarea:focus { outline: none; border-color: var(--secondary); box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2); }
+        .input-bare { border: none; background: transparent; padding: 0; margin: 0; font-size: 16px; font-weight: 700; color: var(--text-main); }
+        .input-bare:focus { box-shadow: none; border-bottom: 2px solid var(--secondary); border-radius: 0; }
+
+        /* Table Design */
+        table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 10px; }
+        th, td { padding: 16px 14px; text-align: left; border-bottom: 1px solid var(--border); }
+        th { background: #EEF2FF; font-weight: 700; color: var(--secondary); text-transform: uppercase; font-size: 13px; letter-spacing: 0.5px; }
+        th:first-child { border-top-left-radius: 8px; }
+        th:last-child { border-top-right-radius: 8px; }
+        td input { margin: 0; background: var(--input-bg); border: 1px solid transparent; }
+        td input:focus { background: white; border: 1px solid var(--secondary); }
+        .num-input { width: 90px; }
+        .row-total { font-weight: 700; color: var(--text-main); font-size: 16px;}
+
+        /* Buttons */
+        button {
+            padding: 12px 24px; border: none; border-radius: 8px; font-size: 15px; font-weight: 700;
+            cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); display: inline-flex; align-items: center; justify-content: center; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        button:active { transform: scale(0.97); }
+        .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 14px rgba(255, 107, 0, 0.4); }
+        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); }
+        
+        .btn-success { background: linear-gradient(135deg, #10B981, #059669); color: white; width: 100%; font-size: 18px; padding: 18px; margin-top: 20px; box-shadow: 0 10px 20px -10px rgba(16, 185, 129, 0.5); }
+        .btn-success:hover { transform: translateY(-3px); box-shadow: 0 15px 25px -10px rgba(16, 185, 129, 0.6); }
+        
+        .btn-danger { background: #FEE2E2; color: var(--danger); padding: 8px 12px; font-size: 12px; }
+        .btn-danger:hover { background: var(--danger); color: white; }
+        
+        .btn-outline { background: white; border: 2px solid var(--secondary); color: var(--secondary); }
+        .btn-outline:hover { background: #EEF2FF; }
+        
+        .btn-add { background: #FFF7ED; color: var(--primary); margin-top: 15px; border: 2px dashed #FDBA74; width: 100%; font-size: 16px;}
+        .btn-add:hover { background: #FFEDD5; border-color: var(--primary); }
+
+        /* Totals Area */
+        .totals-wrapper { display: flex; justify-content: flex-end; margin-top: 30px; }
+        .totals-box { 
+            background: linear-gradient(135deg, #1E3A8A, #3B82F6); 
+            color: white; padding: 25px 40px; border-radius: 16px; text-align: center; min-width: 300px;
+            box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.4);
+        }
+        .totals-box span { display: block; font-size: 15px; color: #93C5FD; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;}
+        .totals-box div { font-size: 38px; font-weight: 800; letter-spacing: -1px; text-shadow: 0 2px 4px rgba(0,0,0,0.2);}
+
+        /* Footer */
+        .footer-note { margin-top: 40px; text-align: center; border-top: 2px dashed var(--border); padding-top: 20px; }
+        .footer-note textarea { text-align: center; font-style: italic; color: var(--text-muted); border: none; background: transparent; font-size: 15px;}
+        
+        /* History Section */
+        #history-section { display: none; margin-top: 40px; padding-top: 30px; border-top: 2px solid var(--border); }
+        .history-item { background: var(--input-bg); padding: 15px 20px; margin-bottom: 12px; border-radius: 8px; border-left: 4px solid var(--success); display: flex; justify-content: space-between; align-items: center; font-weight: 500;}
+        .history-amount { color: var(--success); font-weight: 800; font-size: 20px; }
+
+        /* Mobile View Optimization */
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            .container { padding: 20px; }
+            .header-info { grid-template-columns: 1fr; gap: 15px; }
+            
+            /* Table ko scrollable banane ke liye taaki screen se bahar na jaye */
+            #invoiceTable { display: block; overflow-x: auto; white-space: nowrap; }
+            
+            .totals-box { min-width: 100%; padding: 20px; }
+            .totals-box div { font-size: 30px; }
+            
+            h1 { font-size: 24px; }
+            .btn-success { font-size: 16px; padding: 14px; }
+        }
+
+        /* Print Mode: Pure Black & White, No Backgrounds */
+        @media print {
+            body { background: white !important; padding: 0; color: black; }
+            .container { box-shadow: none; padding: 0; max-width: 100%; border-radius: 0; }
+            .no-print, .btn-primary, .btn-success, .btn-outline, .btn-add, #history-section { display: none !important; }
+            h1 { color: black !important; font-size: 28px; }
+            h3 { color: black !important; }
+            .info-card { border: none !important; padding: 0; background: transparent !important; box-shadow: none !important; border-left: none !important; }
+            .header-info { gap: 10px; border-bottom: 2px solid black; padding-bottom: 20px; }
+            input, textarea { border: none !important; background: transparent !important; padding: 0 !important; margin: 0 !important; color: black !important; }
+            input:focus, textarea:focus { box-shadow: none !important; }
+            .totals-box { background: transparent !important; color: black !important; padding: 0 !important; text-align: right; box-shadow: none !important; }
+            .totals-box span { color: black !important; font-weight: bold; display: inline; margin-right: 10px; font-size: 18px;}
+            .totals-box div { display: inline; font-size: 28px; text-shadow: none !important;}
+            th { background: transparent !important; border-bottom: 2px solid black !important; color: black !important; font-size: 14px;}
+            td { border-bottom: 1px solid #ccc !important; }
+            .footer-note { border-top: 1px solid black !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="login-screen">
+        <div class="container" style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2);">
+            <h1 style="color: white;">Admin Access</h1>
+            <p style="color: #E2E8F0; margin-bottom: 20px;">Enter your secure pin to start billing</p>
+            <input type="password" id="password" placeholder="••••••••">
+            <br>
+            <button class="btn-primary" onclick="checkPassword()">Unlock Dashboard</button>
+        </div>
+    </div>
+
+    <div id="main-app" class="container">
+        <div id="invoice-area">
+            <h1> INVOICE</h1>
+            
+            <div class="header-info">
+                <div class="info-card">
+                    <h3>Billed By</h3>
+                    <input type="text" class="input-bare" value="Deepu Hardware and Eletronics Store" style="font-size: 18px;">
+                    <textarea rows="2" class="input-bare" style="font-size: 15px; margin-top: 8px; font-weight: 500; color: var(--text-muted);">Durga colony , Harphali , Palwal #10;</textarea>
+                    <input type="text" class="input-bare" value="Phone: +91 78278 03510" style="font-size: 15px; font-weight: 600; color: var(--text-main);">
+                </div>
+                <div class="info-card">
+                    <h3>Billed To</h3>
+                    <input type="text" id="custName" placeholder="Customer Name">
+                    <input type="text" id="custPhone" placeholder="Phone Number">
+                    <input type="text" id="custAddress" placeholder="Customer Address">
+                    <p style="font-size: 15px; margin-top: 8px; color: var(--text-muted); font-weight: 500;">Date: <strong id="currentDate" style="color: var(--secondary);"></strong></p>
+                </div>
+            </div>
+
+            <table id="invoiceTable">
+                <thead>
+                    <tr>
+                        <th style="width: 45%;">Item Description</th>
+                        <th>Qty</th>
+                        <th>Rate (₹)</th>
+                        <th>Total (₹)</th>
+                        <th class="no-print" style="text-align: right;">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <tr>
+                        <td><input type="text" class="item-name" placeholder="Enter item name..."></td>
+                        <td><input type="number" class="qty num-input" value="1" min="1" oninput="calculate()"></td>
+                        <td><input type="number" class="rate num-input" value="0" min="0" oninput="calculate()"></td>
+                        <td class="row-total">0.00</td>
+                        <td class="no-print" style="text-align: right;"><button class="btn-danger" onclick="removeRow(this)">Delete</button></td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <button class="btn-add" onclick="addRow()">+ Add Another Item</button>
+
+            <div class="totals-wrapper">
+                <div class="totals-box">
+                    <span>Grand Total</span>
+                    <div>₹ <span id="grandTotal">0.00</span></div>
+                </div>
+            </div>
+
+            <div class="footer-note">
+                <textarea rows="2" placeholder="Enter terms and conditions...">Terms & Conditions: Goods once sold will not be taken back or exchanged. Warranty applicable as per manufacturer policy.</textarea>
+                <h3 style="margin-top: 15px; color: var(--text-main); font-size: 18px;">Thank you for your business!</h3>
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 15px; margin-top: 30px;">
+            <button class="btn-success" onclick="saveAndPrint()">Save & Print Invoice</button>
+            <button class="btn-outline no-print" onclick="toggleHistory()" style="width: 100%; margin-top: 20px;">View Billing History</button>
+        </div>
+
+        <div id="history-section">
+            <h2 style="color: var(--secondary);">Recent Invoices</h2>
+            <div id="history-list"></div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('currentDate').innerText = new Date().toLocaleDateString('en-IN');
+
+        function checkPassword() {
+            const pass = document.getElementById('password').value;
+            if (pass === "1b6981ba") {
+                document.getElementById('login-screen').style.display = "none";
+                document.getElementById('main-app').style.display = "block";
+            } else {
+                alert("Incorrect Pin! Try again.");
+            }
+        }
+
+        function addRow() {
+            const tbody = document.getElementById('tableBody');
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td><input type="text" class="item-name" placeholder="Enter item name..."></td>
+                <td><input type="number" class="qty num-input" value="1" min="1" oninput="calculate()"></td>
+                <td><input type="number" class="rate num-input" value="0" min="0" oninput="calculate()"></td>
+                <td class="row-total">0.00</td>
+                <td class="no-print" style="text-align: right;"><button class="btn-danger" onclick="removeRow(this)">Delete</button></td>
+            `;
+            tbody.appendChild(row);
+        }
+
+        function removeRow(btn) {
+            btn.closest('tr').remove();
+            calculate();
+        }
+
+        function calculate() {
+            let grandTotal = 0;
+            document.querySelectorAll('#tableBody tr').forEach(row => {
+                const qty = parseFloat(row.querySelector('.qty').value) || 0;
+                const rate = parseFloat(row.querySelector('.rate').value) || 0;
+                const total = qty * rate;
+                
+                row.querySelector('.row-total').innerText = total.toFixed(2);
+                grandTotal += total;
+            });
+            document.getElementById('grandTotal').innerText = grandTotal.toFixed(2);
+        }
+
+        function saveAndPrint() {
+            const custName = document.getElementById('custName').value || "Walk-in Customer";
+            const total = document.getElementById('grandTotal').innerText;
+            const date = new Date().toLocaleString('en-IN');
+
+            if(parseFloat(total) > 0) {
+                let history = JSON.parse(localStorage.getItem('invoiceHistoryColor')) || [];
+                history.unshift({ name: custName, amount: total, date: date }); 
+                localStorage.setItem('invoiceHistoryColor', JSON.stringify(history));
+            }
+
+            window.print();
+        }
+
+        function toggleHistory() {
+            const historyDiv = document.getElementById('history-section');
+            const listDiv = document.getElementById('history-list');
+            
+            if (historyDiv.style.display === "none" || historyDiv.style.display === "") {
+                historyDiv.style.display = "block";
+                listDiv.innerHTML = "";
+                
+                let history = JSON.parse(localStorage.getItem('invoiceHistoryColor')) || [];
+                if (history.length === 0) {
+                    listDiv.innerHTML = "<p style='color: var(--text-muted);'>No past invoices found.</p>";
+                    return;
+                }
+
+                history.forEach(inv => {
+                    listDiv.innerHTML += `
+                        <div class="history-item">
+                            <div>
+                                <div style="font-size: 16px; color: var(--text-main); font-weight: 700;">${inv.name}</div>
+                                <div style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">${inv.date}</div>
+                            </div>
+                            <div class="history-amount">₹ ${inv.amount}</div>
+                        </div>
+                    `;
+                });
+            } else {
+                historyDiv.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>
